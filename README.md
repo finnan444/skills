@@ -12,6 +12,7 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 | Skill | Description |
 |-------|-------------|
 | [skeleton-dev](skills/skeleton-dev/) | Build UI with Skeleton UI v4 (any framework). Use when creating, editing, or reviewing any component that uses Skeleton UI — buttons, modals, tabs, navigation, forms, cards, avatars, etc. Also use when questions involve Skeleton presets, color pairings, composed component patterns, or theming. Supports Svelte, React, and framework-agnostic usage. |
+| [panda-css](skills/panda-css/) | Build styles with Panda CSS. Use when creating, editing, or reviewing any code that uses Panda CSS — css(), cva(), sva(), recipes, patterns, tokens, semantic tokens, config, theming, or JSX styled components. Supports React, Vue, Svelte, Solid, and any framework with PostCSS. |
 <!-- SKILLS:END -->
 
 ## Installation
