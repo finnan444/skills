@@ -23,7 +23,8 @@ Use WebFetch to retrieve the correct reference **before starting any task**.
 ## Usage
 
 1. Fetch `llms.txt` index to check for any new/updated doc URLs
-2. Detect framework from the project context
-3. Fetch the matching framework-specific docs
-4. Read the relevant sections for the components needed
-5. Write or review code following the documented patterns
+2. Confirm Skeleton version in `package.json`/lockfiles; if not v4, pause and alert the user before proceeding.
+3. Detect framework from the project context. If unclear, ask the user; if still ambiguous, fetch both Svelte/React docs but only read the relevant sections.
+4. Fetch the matching framework-specific docs (reuse a cached copy during the session unless `llms.txt` changed).
+5. Read the relevant sections for the components needed
+6. Write or review code following the documented patterns
