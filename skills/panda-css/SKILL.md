@@ -1,39 +1,26 @@
 ---
 name: panda-css
-description: Build styles with Panda CSS. Use when creating, editing, or reviewing any code that uses Panda CSS — css(), cva(), sva(), recipes, patterns, tokens, semantic tokens, config, theming, or JSX styled components. Supports React, Vue, Svelte, Solid, and any framework with PostCSS.
+description: Build styles with Panda CSS. Use when creating, editing, or reviewing any code that uses Panda CSS — css(), cva(), sva(), recipes, patterns, tokens, semantic tokens, panda.config, theming, codegen, or JSX styled components. Also use when Panda emits class names but no CSS. Supports React, Vue, Svelte, Solid, and any framework with PostCSS.
 ---
 
 # Panda CSS
 
-Reference Panda CSS LLM-optimized docs before writing or reviewing Panda CSS code.
+## Process
 
-## Docs Sources
+1. **Package.** Confirm `@pandacss/dev` in the target package (monorepo: the app being edited). If it is missing, stop and tell the user. Done when you have the installed major and the package path.
 
-First fetch `https://panda-css.com/llms.txt` — this is the index of all available LLM docs.
+2. **Config.** Read `panda.config.ts` (or `.js`/`.mjs`); if absent, ask whether to scaffold. Done when you have `outdir` (default `styled-system`), `include`, `jsxFramework`, and the import prefix that package already uses.
 
-Then fetch the relevant section-specific docs based on the task:
+3. **Docs.** Fetch `https://panda-css.com/llms.txt`. Fetch only the section URLs that index lists for this task. Reuse the in-session copies unless the index changed. If the installed major does not match the docs' major, flag it before copying APIs. If the index is unreachable, fall back to `llms.txt/{overview,concepts,theming,utilities,customization,guides,references}` or `llms-full.txt`. Done when those pages are in context.
 
-| Section | URL | When to use |
-|---------|-----|-------------|
-| Full docs | `https://panda-css.com/llms-full.txt` | General reference, broad tasks |
-| Overview | `https://panda-css.com/llms.txt/overview` | Setup, installation, framework integrations |
-| Concepts | `https://panda-css.com/llms.txt/concepts` | css(), recipes (cva/sva), patterns, conditions, cascade layers, style merging, JSX style context |
-| Theming | `https://panda-css.com/llms.txt/theming` | Tokens, semantic tokens, text styles, layer styles, animation styles |
-| Utilities | `https://panda-css.com/llms.txt/utilities` | Style properties, shorthands, spacing, sizing, typography, effects, gradients, focus ring |
-| Customization | `https://panda-css.com/llms.txt/customization` | Custom conditions, utilities, patterns, presets, config functions, theme overrides |
-| Guides | `https://panda-css.com/llms.txt/guides` | Migration, dynamic styling, debugging, advanced patterns |
-| References | `https://panda-css.com/llms.txt/references` | CLI commands, panda.config.ts options, full config reference |
+4. **Write or review.** Apply every rule below to the diff. Done when each rule holds.
 
-Use WebFetch to retrieve the correct reference **before starting any task**.
-If the index lists different section URLs, follow the index and ignore the table above.
+## Rules
 
-## Usage
+**Imports.** Runtime (`css`, `cva`, `sva`, recipes, patterns, `styled`) comes from `outdir`. Config authors (`defineConfig`, `defineRecipe`, `defineSlotRecipe`, `defineTokens`, …) come from `@pandacss/dev`. Copy the package's existing import prefix (alias vs relative). Treat `outdir` as a build artifact. Changing tokens, recipes, patterns, conditions, `jsxFramework`, or `outdir` requires codegen before the new types or runtime exist.
 
-1. Fetch `llms.txt` index to check for any new/updated doc URLs.
-2. Confirm Panda CSS is installed by checking for `@pandacss/dev` in `package.json`/lockfiles. If missing, pause and alert the user before proceeding.
-3. Note the installed Panda version (v0 vs v1+). If docs don’t match the installed major version, flag it before continuing.
-4. In monorepos or multiple apps, inspect the relevant package path or ask the user which app to target.
-5. Check for `panda.config.ts` (or `.js`/`.mjs`) to understand tokens, recipes, patterns, and framework config. If absent, ask whether to scaffold a minimal config.
-6. Fetch the matching section-specific docs for the task at hand (reuse a cached copy during the session unless `llms.txt` changed).
-7. Read the relevant sections for the features needed.
-8. Write or review code following the documented patterns.
+**Names.** Every token, recipe, and pattern name comes from this config (and its presets) or the generated types. Match the vocabulary already used in neighboring files.
+
+**Extraction.** Panda emits CSS for style objects and recipe variants it can see at build time. Keep values statically analyzable. A runtime variable as a style value, or a config-recipe variant passed only as a prop, yields class names without CSS unless `staticCss` or a literal extracted call covers it. The file must sit inside `include`.
+
+**Which API.** Use the primitive this package already uses for the same job. If none, pick from the Concepts docs after loading them. `styled` / the JSX factory only when `jsxFramework` is set.
