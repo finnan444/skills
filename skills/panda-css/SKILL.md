@@ -15,12 +15,14 @@ description: Build styles with Panda CSS. Use when creating, editing, or reviewi
 
    | Page | Covers |
    |------|--------|
-   | `/llms.txt/overview` | Setup, installation, framework integrations |
+   | `/llms.txt/overview` | Getting started, browser support, FAQ |
+   | `/llms.txt/installation` | Framework-specific setup (Next.js, Vite, Astro, …), PostCSS |
    | `/llms.txt/concepts` | `css()`, `cva`/`sva`, patterns, conditions, cascade layers, style merging |
    | `/llms.txt/theming` | Tokens, semantic tokens, text/layer/animation styles |
    | `/llms.txt/utilities` | Style properties, shorthands, spacing, typography, effects |
    | `/llms.txt/customization` | Custom conditions, utilities, patterns, presets, theme overrides |
-   | `/llms.txt/guides` | Migration, dynamic styling, debugging |
+   | `/llms.txt/guides` | Dynamic styling, debugging, other practical guides |
+   | `/llms.txt/migration` | Migrating from other CSS-in-JS libraries |
    | `/llms.txt/references` | CLI commands, `panda.config.ts` options |
    | `/llms-full.txt` | Everything, for broad tasks |
 
