@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
-"""Clean a WebVTT file (YouTube rolling captions) into timestamped plain text.
+"""Clean a WebVTT file (YouTube rolling captions) into plain text paragraphs.
 
-Usage: clean_vtt.py <file.vtt>
-Prints one line per cue: [MM:SS] text
+Usage: clean_vtt.py <file.vtt> [--timestamps] [--chapters chapters.json]
+Prints one blank-line-separated paragraph per ~30 s block, optionally
+prefixed with [MM:SS] and grouped under the video's own chapter headings.
 """
 from __future__ import annotations
 
+import argparse
 import html
+import json
 import re
-import sys
 from pathlib import Path
+
+# A caption cue is ~3 s of speech, far too short to grep or read as prose.
+# Blocks close at the first sentence end past MIN_BLOCK_SECONDS so each one
+# is self-contained; MAX_BLOCK_SECONDS bounds a speaker who never stops.
+MIN_BLOCK_SECONDS = 30
+MAX_BLOCK_SECONDS = 60
+SENTENCE_END_RE = re.compile(r"[.!?…]['\"»)]?$")
 
 TS_RE = re.compile(
     r"(\d{2}):(\d{2}):(\d{2})[.,](\d{3})\s+-->\s+(\d{2}):(\d{2}):(\d{2})[.,](\d{3})"
@@ -73,29 +82,77 @@ def _dedupe(segments: list[dict]) -> list[dict]:
     return out
 
 
-def format_transcript(segments: list[dict]) -> str:
-    lines = []
+def _blocks(segments: list[dict], breaks: list[float]) -> list[dict]:
+    """Merge cues into ~30 s paragraphs, breaking on sentence ends.
+
+    `breaks` are start times a paragraph must not run past — chapter
+    boundaries, so a paragraph never straddles two topics.
+    """
+    out: list[dict] = []
     for seg in segments:
-        total = int(seg["start"])
-        hours, rem = divmod(total, 3600)
-        minutes, sec = divmod(rem, 60)
-        stamp = f"{hours:02d}:{minutes:02d}:{sec:02d}" if hours else f"{minutes:02d}:{sec:02d}"
-        lines.append(f"[{stamp}] {seg['text']}")
-    return "\n".join(lines)
+        if not out:
+            out.append(dict(seg))
+            continue
+        cur = out[-1]
+        span = seg["start"] - cur["start"]
+        ended = SENTENCE_END_RE.search(cur["text"])
+        crossed = any(cur["start"] < b <= seg["start"] for b in breaks)
+        if crossed or span >= MAX_BLOCK_SECONDS or (span >= MIN_BLOCK_SECONDS and ended):
+            out.append(dict(seg))
+        else:
+            cur["text"] = f"{cur['text']} {seg['text']}"
+    return out
+
+
+def load_chapters(path: Path) -> list[dict]:
+    """Read yt-dlp's `%(chapters)j` output. `null` means the video has none."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not data:
+        return []
+    return [{"start": float(c["start_time"]), "title": c["title"]} for c in data]
+
+
+def _stamp(start: float) -> str:
+    hours, rem = divmod(int(start), 3600)
+    minutes, sec = divmod(rem, 60)
+    return f"{hours:02d}:{minutes:02d}:{sec:02d}" if hours else f"{minutes:02d}:{sec:02d}"
+
+
+def format_transcript(
+    segments: list[dict], timestamps: bool, chapters: list[dict]
+) -> str:
+    blocks = _blocks(segments, [c["start"] for c in chapters])
+    pending = list(chapters)
+    parts: list[str] = []
+    for block in blocks:
+        while pending and pending[0]["start"] <= block["start"]:
+            chapter = pending.pop(0)
+            parts.append(f"## [{_stamp(chapter['start'])}] {chapter['title']}")
+        parts.append(
+            f"[{_stamp(block['start'])}] {block['text']}" if timestamps else block["text"]
+        )
+    if blocks:
+        for chapter in pending:
+            parts.append(f"## [{_stamp(chapter['start'])}] {chapter['title']}")
+    return "\n\n".join(parts)
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: clean_vtt.py <file.vtt>", file=sys.stderr)
-        return 2
-    path = Path(sys.argv[1])
-    if not path.is_file():
-        print(f"not a file: {path}", file=sys.stderr)
-        return 2
-    text = format_transcript(parse_vtt(path))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("vtt", type=Path)
+    parser.add_argument(
+        "-t", "--timestamps", action="store_true", help="prefix each block with [MM:SS]"
+    )
+    parser.add_argument(
+        "-c", "--chapters", type=Path, help="JSON file from yt-dlp's %%(chapters)j"
+    )
+    args = parser.parse_args()
+    if not args.vtt.is_file():
+        parser.error(f"not a file: {args.vtt}")
+    chapters = load_chapters(args.chapters) if args.chapters else []
+    text = format_transcript(parse_vtt(args.vtt), args.timestamps, chapters)
     if not text.strip():
-        print("no cues found", file=sys.stderr)
-        return 1
+        parser.exit(1, "no cues found\n")
     print(text)
     return 0
 
