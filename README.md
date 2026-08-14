@@ -12,6 +12,7 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 | Skill | Description |
 |-------|-------------|
 | [panda-css](skills/panda-css/) | Build styles with Panda CSS. Use when creating, editing, or reviewing any code that uses Panda CSS — css(), cva(), sva(), recipes, patterns, tokens, semantic tokens, panda.config, theming, codegen, or JSX styled components. Also use when Panda emits class names but no CSS. Supports React, Vue, Svelte, Solid, and any framework with PostCSS. |
+| [youtube-transcript](skills/youtube-transcript/) | Pull a YouTube transcript (captions only, no video download). Use when the user pastes a YouTube URL, youtu.be link, Shorts URL, or 11-char video ID and wants the transcript, subtitles, captions, or a text dump of what was said. Also use for /youtube-transcript. |
 <!-- SKILLS:END -->
 
 ## Installation
