@@ -1,6 +1,7 @@
 ---
 name: youtube-transcript
-description: Pull a YouTube transcript (captions only, no video download). Use when the user pastes a YouTube URL, youtu.be link, Shorts URL, or 11-char video ID and wants the transcript, subtitles, captions, or a text dump of what was said. Also use for /youtube-transcript.
+description: Pull a YouTube transcript from existing captions via yt-dlp (captions only; prefers original-language track, then ru, then en).
+disable-model-invocation: true
 ---
 
 # YouTube transcript
