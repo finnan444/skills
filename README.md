@@ -11,7 +11,6 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 <!-- SKILLS:START -->
 | Skill | Description |
 |-------|-------------|
-| [skeleton-dev](skills/skeleton-dev/) | Build UI with Skeleton UI v4 (any framework). Use when creating, editing, or reviewing any component that uses Skeleton UI — buttons, modals, tabs, navigation, forms, cards, avatars, etc. Also use when questions involve Skeleton presets, color pairings, composed component patterns, or theming. Supports Svelte, React, and framework-agnostic usage. |
 | [panda-css](skills/panda-css/) | Build styles with Panda CSS. Use when creating, editing, or reviewing any code that uses Panda CSS — css(), cva(), sva(), recipes, patterns, tokens, semantic tokens, panda.config, theming, codegen, or JSX styled components. Also use when Panda emits class names but no CSS. Supports React, Vue, Svelte, Solid, and any framework with PostCSS. |
 <!-- SKILLS:END -->
 
@@ -26,7 +25,7 @@ Use [npx skills](https://github.com/vercel-labs/skills) to install skills direct
 npx skills add finnan444/skills
 
 # Install specific skills
-npx skills add finnan444/skills --skill skeleton-dev
+npx skills add finnan444/skills --skill panda-css
 
 # List available skills
 npx skills add finnan444/skills --list
