@@ -2,6 +2,7 @@
 """Clean a WebVTT file (YouTube rolling captions) into plain text paragraphs.
 
 Usage: clean_vtt.py <file.vtt> [--timestamps] [--chapters chapters.json]
+                    [--title "Video title"] [--meta "Uploader · 12:34 · <url>"]
 Prints one blank-line-separated paragraph per ~30 s block, optionally
 prefixed with [MM:SS] and grouped under the video's own chapter headings.
 """
@@ -146,6 +147,8 @@ def main() -> int:
     parser.add_argument(
         "-c", "--chapters", type=Path, help="JSON file from yt-dlp's %%(chapters)j"
     )
+    parser.add_argument("--title", help="video title, emitted as an H1 on top")
+    parser.add_argument("--meta", help="source line, emitted under the title")
     args = parser.parse_args()
     if not args.vtt.is_file():
         parser.error(f"not a file: {args.vtt}")
@@ -153,6 +156,11 @@ def main() -> int:
     text = format_transcript(parse_vtt(args.vtt), args.timestamps, chapters)
     if not text.strip():
         parser.exit(1, "no cues found\n")
+    header = [f"# {args.title}"] if args.title else []
+    if args.meta:
+        header.append(args.meta)
+    if header:
+        text = "\n\n".join(header + [text])
     print(text)
     return 0
 

@@ -56,8 +56,14 @@ Captions only. Never download the video.
 6. **Clean.**
 
    ```bash
-   "$SKILL_DIR/scripts/clean_vtt.py" "<vtt>" --chapters "<tmpdir>/chapters.json" > "<tmpdir>/transcript.md"
+   "$SKILL_DIR/scripts/clean_vtt.py" "<vtt>" \
+     --title "<title>" --meta "<uploader> · <duration> · <watch URL>" \
+     --chapters "<tmpdir>/chapters.json" > "<tmpdir>/<slug>.md"
    ```
+
+   `--title` and `--meta` put the video's title as `# <title>` and the source line under it, above the chapter headings — a transcript that names its own video and links back to it survives being moved, pasted, or read months later. Same fields as the chat line in step 7, minus lang and manual|auto; `live` in place of the duration when yt-dlp printed `NA`.
+
+   `<slug>` is the title too: lowercase, letters and digits of any script kept as they are (a Russian title stays Russian), every other run of characters collapsed to a single `-`, trimmed to ~60 chars at a `-` boundary, leading and trailing `-` stripped. Empty result (a title of pure emoji or punctuation) → use the 11-char id.
 
    Drop `--chapters` when the file holds `null`. With it, paragraphs are grouped under `## [MM:SS] Title` headings taken from the uploader's own chapter marks, and no paragraph straddles a boundary — the topic split is the author's, which beats anything inferred from the text, and the headings double as an outline and as grep anchors.
 
@@ -65,12 +71,12 @@ Captions only. Never download the video.
 
    Never reflow the text yourself: paragraphs are the script's job, and rewriting a transcript through the model costs more than the timestamps it saves.
 
-   Non-zero exit → report and stop. Done when `transcript.md` is non-empty.
+   Non-zero exit → report and stop. Done when `<slug>.md` is non-empty and starts with the `# <title>` line.
 
 7. **Report.** In chat, in this order:
 
    - one line: `<title> · <uploader> · <duration> · <lang> · manual|auto`. A live or just-ended video has no duration — yt-dlp prints `NA`; write `live` instead.
-   - path to `transcript.md`
+   - path to `<slug>.md`
    - a short summary of what the video covers
 
    Paste the transcript body into chat only if the user asked for the raw text, or if it is under ~20 paragraphs. Otherwise the file on disk is the deliverable — a long transcript buries the rest of the conversation. For follow-up work on a long transcript, grep the file for the paragraphs you need instead of reading it whole.
