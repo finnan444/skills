@@ -1,12 +1,13 @@
-# Frontend Skills for Claude Code
+# Skills for Claude Code
 
-A collection of frontend skills designed to enhance the capabilities of Claude Code, an AI assistant for developers. These skills cover a wide range of frontend technologies and best practices, enabling Claude Code to assist with various aspects of frontend development.
+Skills that teach [Claude Code](https://claude.com/claude-code) how to do a specific job the way it should be done — Panda CSS styling, YouTube transcripts — so you stop re-explaining the same rules and gotchas in every session. Each one is a short, numbered procedure with exact commands and explicit done-conditions, not a pile of advice.
 
-## What are Skills?
+- **Process, not prose.** Every skill is a numbered checklist: what to run, what "done" means for each step, and what to do when a step fails.
+- **Gotchas already paid for.** The traps are written down — `yt-dlp --print` silently implying `--simulate`, `--sub-langs` taking regexes and not globs, HTTP 429 on caption tracks, Panda emitting class names with no CSS when a value isn't statically analyzable.
+- **Injection-hardened.** Skills that read third-party content (video captions, uploader titles, fetched docs) treat it as data, never as instructions.
+- **No dependencies to install.** Plain Markdown plus one Python script, no runtime, no config.
 
-Skills are markdown files that give AI agents specialized knowledge and workflows for specific tasks. When you add these to your project, Claude Code can recognize when you're working on a marketing task and apply the right frameworks and best practices.
-
-## Available Skills
+## Available skills
 
 <!-- SKILLS:START -->
 | Skill | Description |
@@ -15,29 +16,79 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 | [youtube-transcript](skills/youtube-transcript/) | Pull a YouTube transcript from existing captions via yt-dlp (captions only; prefers original-language track, then ru, then en). |
 <!-- SKILLS:END -->
 
+---
+
+## Example
+
+Ask for a transcript in Claude Code:
+
+```
+/youtube-transcript https://youtu.be/<id>
+```
+
+You get `<video-title-slug>.md` — headed by the video's own title and source line, with ~30-second paragraphs grouped under the uploader's chapter marks:
+
+```markdown
+# <video title>
+
+<uploader> · <duration> · https://www.youtube.com/watch?v=<id>
+
+## [00:00] <first chapter title>
+
+<spoken text, broken at sentence ends into readable paragraphs>
+```
+
+No video is downloaded, and no timestamps clutter the text unless you ask for them.
+
+---
+
 ## Installation
 
-### Option 1: CLI Install (Recommended)
+### Option 1: CLI install (recommended)
 
-Use [npx skills](https://github.com/vercel-labs/skills) to install skills directly:
+[`npx skills`](https://github.com/vercel-labs/skills) copies the skills into `.claude/skills/` for you:
 
 ```bash
-# Install all skills
+# All skills, into the current project
 npx skills add finnan444/skills
 
-# Install specific skills
+# Just one
 npx skills add finnan444/skills --skill panda-css
 
-# List available skills
+# See what's available first
 npx skills add finnan444/skills --list
 ```
 
-This automatically installs to your `.claude/skills/` directory.
+### Option 2: Manual
+
+Copy the skill directory into your project (or `~/.claude/skills/` to have it everywhere):
+
+```bash
+git clone https://github.com/finnan444/skills.git /tmp/finnan444-skills
+mkdir -p .claude/skills
+cp -R /tmp/finnan444-skills/skills/youtube-transcript .claude/skills/
+```
+
+Then restart Claude Code (or run `/doctor`) so it picks up the new skill.
+
+### Prerequisites
+
+Only `youtube-transcript` needs anything extra:
+
+```bash
+brew install yt-dlp   # or your OS equivalent
+python3 --version     # 3.x, already present on macOS and most Linux
+```
+
+## Usage
+
+- **panda-css** is picked up automatically — start editing Panda code and ask for what you want ("add a `size` variant to this recipe"). The skill loads itself when the task touches Panda.
+- **youtube-transcript** is slash-command only (`disable-model-invocation: true`), so it never fires on its own. Invoke it with `/youtube-transcript <url>`; it accepts `watch?v=`, `youtu.be/`, `/shorts/`, `/embed/`, `/live/`, or a bare 11-character video id.
 
 ## Contributing
 
-Found a way to improve a skill? Have a new skill to suggest? PRs and issues welcome!
+Found a way to improve a skill? Have a new skill to suggest? PRs and issues welcome.
 
 ## License
 
-[MIT](LICENSE) - Use these however you want.
+[MIT](LICENSE) — use these however you want.
