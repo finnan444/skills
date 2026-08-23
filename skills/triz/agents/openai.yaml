@@ -1,0 +1,7 @@
+interface:
+  display_name: "ТРИЗ"
+  short_description: "Разбор задачи через противоречия и ресурсы"
+  default_prompt: "Используй $triz, чтобы разобрать задачу и найти проверяемые направления решения."
+
+policy:
+  allow_implicit_invocation: false
