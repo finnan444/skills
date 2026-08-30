@@ -13,7 +13,7 @@ Skills that teach [Claude Code](https://claude.com/claude-code) how to do a spec
 | Skill | Description |
 |-------|-------------|
 | [panda-css](skills/panda-css/) | Build styles with Panda CSS. Use when creating, editing, or reviewing any code that uses Panda CSS — css(), cva(), sva(), recipes, patterns, tokens, semantic tokens, panda.config, theming, codegen, or JSX styled components. Also use when Panda emits class names but no CSS. Supports React, Vue, Svelte, Solid, and any framework with PostCSS. |
-| [youtube-transcript](skills/youtube-transcript/) | Pull a YouTube transcript from existing captions via yt-dlp (captions only; prefers original-language track, then ru, then en). |
+| [youtube-transcript](skills/youtube-transcript/) | Pull a YouTube transcript from existing captions via yt-dlp (captions only; prefers original-language track, then ru, then en). Fetches, cleans and maps the video in a subagent. |
 <!-- SKILLS:END -->
 
 ---
@@ -35,10 +35,22 @@ You get `<video-title-slug>.md` — headed by the video's own title and source l
 
 ## [00:00] <first chapter title>
 
-<spoken text, broken at sentence ends into readable paragraphs>
+[00:00] <spoken text, broken at sentence ends into readable paragraphs>
 ```
 
-No video is downloaded, and no timestamps clutter the text unless you ask for them.
+Anything past ~12 minutes also gets `<video-title-slug>.map.md`: an abstract, a
+timestamped index of 8-20 topics, and the claims worth finding again. The map is
+what your follow-up questions and detailed write-ups read — it is a couple of
+thousand tokens against a transcript that can be forty, and its timestamps are
+exact, so one section comes back with
+
+```bash
+awk '/^\[04:12\]/,/^\[09:30\]/' <video-title-slug>.md
+```
+
+No video is downloaded. The whole fetch — yt-dlp, cleaning, the full read the map
+and the summary need — happens in a subagent, so your main conversation only ever
+sees the report.
 
 ---
 
@@ -77,8 +89,14 @@ Only `youtube-transcript` needs anything extra:
 
 ```bash
 brew install yt-dlp   # or your OS equivalent
-python3 --version     # 3.x, already present on macOS and most Linux
+python3 --version     # 3.x, for the caption cleaner
 ```
+
+yt-dlp is itself a Python program, so installing it through Homebrew or pip brings
+an interpreter along. The gap is the self-contained `yt-dlp_macos` binary, which
+keeps its Python inside the bundle: there, install `python3` separately. On macOS
+`/usr/bin/python3` is an Xcode Command Line Tools stub — `xcode-select --install`
+turns it into a real interpreter.
 
 ## Usage
 
