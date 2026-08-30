@@ -1,0 +1,7 @@
+interface:
+  display_name: "YouTube Transcript"
+  short_description: "Fetch, clean, and map YouTube captions"
+  default_prompt: "Use $youtube-transcript to fetch and map the captions for this YouTube video."
+
+policy:
+  allow_implicit_invocation: false

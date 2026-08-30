@@ -1,6 +1,6 @@
 ---
 name: triz
-description: "Разбор задачи по ТРИЗ: снять инерцию, дойти до ИКР, вскрыть противоречие и найти проверяемые направления решения в ресурсах системы."
+description: "TRIZ problem analysis: strip the assumed solution out of the problem statement, reach the ideal final result, expose the contradiction, and turn resources the system already has into testable directions. Use when the ask already names its own solution, or when a root-cause or design problem needs reframing. Skill body and examples are in Russian."
 disable-model-invocation: true
 ---
 

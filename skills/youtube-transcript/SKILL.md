@@ -22,15 +22,16 @@ report. Do not read the transcript here to check its work.
    URL.
 
 2. **Dispatch.** `references/fetch.md` sits next to this file. Set `SKILL_DIR` to
-   the absolute directory of the SKILL.md you read, then call the Agent tool once —
-   `subagent_type: general-purpose`, `run_in_background: false`, since the user is
-   waiting on the result and nothing else can proceed without it:
+   the absolute directory of the SKILL.md you read, then dispatch exactly one
+   general-purpose subagent through the host's native subagent mechanism. Wait for
+   it to finish: the user is waiting on the result and nothing else can proceed
+   without it.
 
    > Read `<SKILL_DIR>/references/fetch.md` and follow it end to end for
    > `<watch URL>`. `SKILL_DIR` is `<SKILL_DIR>`. Return the report the last step
    > asks for, and nothing else — no transcript body.
 
-   Done when the subagent returns.
+   Done when the subagent returns its report.
 
 3. **Report.** The subagent's report never reaches the user on its own. Relay it:
    the identification line, the transcript path, the map path, the summary, and any
