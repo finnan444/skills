@@ -1,11 +1,10 @@
 # Agent Skills
 
-Three reusable workflows for Claude Code, Codex, and Grok Build: reliable Panda CSS changes, TRIZ problem analysis, and readable YouTube transcripts. Instead of making you repeat a long prompt, each skill defines the checks, failure paths, and done conditions the agent should follow.
+Two reusable workflows for Claude Code, Codex, and Grok Build: TRIZ problem analysis and readable YouTube transcripts. Instead of making you repeat a long prompt, each skill defines the checks, failure paths, and done conditions the agent should follow.
 
 - **Cross-agent.** The same `SKILL.md` directories work in Claude Code, Codex, and Grok Build—no separate forks to maintain.
 - **Process, not prose.** Each skill says what to inspect, what to do, and how to know the work is complete.
-- **Explicit when appropriate.** `triz` and `youtube-transcript` run only when you name them; `panda-css` can activate automatically for Panda tasks.
-- **Gotchas included.** The procedures cover Panda CSS extraction gaps, unavailable caption tracks, and solution bias in problem statements.
+- **Gotchas included.** The procedures cover unavailable caption tracks, mangled auto-caption numbers, and solution bias in problem statements.
 - **Untrusted input stays data.** The transcript workflow never treats video titles, captions, or fetched material as instructions.
 
 ```text
@@ -34,7 +33,6 @@ $youtube-transcript https://youtu.be/<id>
 <!-- SKILLS:START -->
 | Skill | What it helps with | Activation |
 |-------|--------------------|------------|
-| [panda-css](skills/panda-css/) | Build and review Panda CSS styles while respecting the target project's config, generated APIs, tokens, and static extraction rules. | Automatic for Panda CSS tasks, or explicit. |
 | [triz](skills/triz/) | Reframe a problem without its assumed solution, expose the contradiction, and turn existing system resources into testable directions. | Explicit only. |
 | [youtube-transcript](skills/youtube-transcript/) | Fetch existing YouTube captions without downloading video, clean them into readable prose, and map longer transcripts for cheap follow-up questions. | Explicit only. |
 <!-- SKILLS:END -->
@@ -72,7 +70,7 @@ npx skills add finnan444/skills --skill '*' \
   -a claude-code -a codex -a grok
 
 # Or install one skill for one agent
-npx skills add finnan444/skills --skill panda-css -a codex
+npx skills add finnan444/skills --skill triz -a codex
 ```
 
 Use `-g` with an install command to make the skills available across projects. Without it, the CLI installs them into the current project.
@@ -86,20 +84,20 @@ git clone https://github.com/finnan444/skills.git /tmp/finnan444-skills
 
 # Claude Code
 mkdir -p .claude/skills
-cp -R /tmp/finnan444-skills/skills/{panda-css,triz,youtube-transcript} .claude/skills/
+cp -R /tmp/finnan444-skills/skills/{triz,youtube-transcript} .claude/skills/
 
 # Codex
 mkdir -p .agents/skills
-cp -R /tmp/finnan444-skills/skills/{panda-css,triz,youtube-transcript} .agents/skills/
+cp -R /tmp/finnan444-skills/skills/{triz,youtube-transcript} .agents/skills/
 
 # Grok Build
 mkdir -p .grok/skills
-cp -R /tmp/finnan444-skills/skills/{panda-css,triz,youtube-transcript} .grok/skills/
+cp -R /tmp/finnan444-skills/skills/{triz,youtube-transcript} .grok/skills/
 ```
 
 ### YouTube transcript prerequisites
 
-Installing the other skills adds no prerequisites of its own. `youtube-transcript` requires `yt-dlp` and Python 3:
+`triz` needs nothing extra. `youtube-transcript` requires `yt-dlp` and Python 3:
 
 ```bash
 brew install yt-dlp   # or use your operating system's package manager
@@ -111,10 +109,6 @@ If you use the self-contained `yt-dlp_macos` binary, install Python separately. 
 ---
 
 ## Usage
-
-### Panda CSS
-
-Start a Panda CSS task normally—for example, “add a `size` variant to this recipe.” The skill activates automatically, reads the package's Panda config and conventions first, and checks that generated CSS can be statically extracted.
 
 ### TRIZ
 
@@ -158,7 +152,7 @@ The transcript is saved as `<video-title-slug>.md`, with the video's title and s
 [00:00] <spoken text, grouped into a readable paragraph>
 ```
 
-Videos with 25 or more transcript paragraphs also get `<video-title-slug>.map.md`: a short abstract, an index of 8–20 timestamped topics when uploader chapters are unavailable, and notable claims worth finding again. Follow-up questions can use that map and read only the relevant transcript section:
+Videos with 25 or more transcript paragraphs keep the `[MM:SS]` paragraph marks and also get `<video-title-slug>.map.md`: a short abstract, an index of 8–20 timestamped topics when uploader chapters are unavailable, and notable claims worth finding again. Follow-up questions can use that map and read only the relevant transcript section:
 
 ```bash
 awk '/^\[04:12\]/,/^\[09:30\]/' <video-title-slug>.md
