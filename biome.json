@@ -1,0 +1,20 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.6.4/schema.json",
+  "files": {
+    "includes": ["**/*.md", "**/*.yaml", "**/*.yml"]
+  },
+  "formatter": {
+    "indentStyle": "space"
+  },
+  "linter": {
+    "enabled": false
+  },
+  "assist": {
+    "enabled": false
+  },
+  "markdown": {
+    "parser": {
+      "frontmatter": true
+    }
+  }
+}

@@ -31,9 +31,9 @@ $youtube-transcript https://youtu.be/<id>
 ## Available skills
 
 <!-- SKILLS:START -->
-| Skill | What it helps with | Activation |
-|-------|--------------------|------------|
-| [triz](skills/triz/) | Reframe a problem without its assumed solution, expose the contradiction, and turn existing system resources into testable directions. | Explicit only. |
+| Skill                                            | What it helps with                                                                                                                                   | Activation     |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| [triz](skills/triz/)                             | Reframe a problem without its assumed solution, expose the contradiction, and turn existing system resources into testable directions.               | Explicit only. |
 | [youtube-transcript](skills/youtube-transcript/) | Fetch existing YouTube captions without downloading video, clean them into readable prose, and map longer transcripts for cheap follow-up questions. | Explicit only. |
 <!-- SKILLS:END -->
 
@@ -41,11 +41,11 @@ $youtube-transcript https://youtu.be/<id>
 
 The skills use the open Agent Skills directory format: a required `SKILL.md` plus optional scripts, references, and host metadata.
 
-| Host | Explicit invocation | Project skill directory |
-|------|---------------------|-------------------------|
-| Claude Code | `/skill-name` | `.claude/skills/` |
-| Codex | `$skill-name` or `/skills` | `.agents/skills/` |
-| Grok Build | `/skill-name` | `.grok/skills/` |
+| Host        | Explicit invocation        | Project skill directory |
+| ----------- | -------------------------- | ----------------------- |
+| Claude Code | `/skill-name`              | `.claude/skills/`       |
+| Codex       | `$skill-name` or `/skills` | `.agents/skills/`       |
+| Grok Build  | `/skill-name`              | `.grok/skills/`         |
 
 - [Codex supports](https://developers.openai.com/codex/skills) `SKILL.md`, scripts, references, and `agents/openai.yaml` metadata.
 - [Grok Build supports](https://docs.x.ai/build/features/skills-plugins-marketplaces) native `.grok/skills/` directories and Claude Code compatibility paths.

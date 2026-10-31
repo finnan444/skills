@@ -203,7 +203,6 @@ the report and carry on.
 
 7. **Report.** Your transcript is not shown to the user — the parent relays your
    report, so put everything in it and keep it under ~15 lines:
-
    - one line: `<title> · <uploader> · <duration> · <lang> · manual|auto`. A live or
      just-ended video has no duration — yt-dlp prints `NA`; write `live` instead.
    - path to `<slug>.md`
