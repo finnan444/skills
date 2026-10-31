@@ -156,7 +156,7 @@ the report and carry on.
 
    <uploader> · <duration> · <watch URL>
    Captions: manual|auto · <lang>
-   Transcript: <tmpdir>/<slug>.md
+   Transcript: <slug>.md
 
    ## Abstract
 
@@ -172,6 +172,10 @@ the report and carry on.
    - [MM:SS] a claim, number, name or definition worth finding again
    - …
    ```
+
+   `Transcript:` holds the bare file name, never `<tmpdir>` or any other absolute
+   path: the two files are moved together out of the temp dir, and a sibling name
+   keeps the link valid wherever they land.
 
    Every timestamp in the map must be **copied character for character from a
    paragraph prefix in the transcript**, never rounded or invented. That is what
